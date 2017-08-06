@@ -1,8 +1,12 @@
 package com.rjp.elearner;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,13 +28,23 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.rjp.elearner.adapters.TransformerAdapter;
+import com.rjp.elearner.adapters.WeekListAdapter;
+import com.rjp.elearner.beans.WeeksBean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HomeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
+    private String TAG = HomeScreen.class.getSimpleName();
+    private Context mContext;
     private SliderLayout mDemoSlider;
+    private FloatingActionButton fab;
+
+    //private ListView listView;
+    private RecyclerView rvList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +53,8 @@ public class HomeScreen extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        init();
+        initListners();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,15 +65,14 @@ public class HomeScreen extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
-
         HashMap<String,String> url_maps = new HashMap<String, String>();
         url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
         url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
         url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
         url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
 
-        for(String name : url_maps.keySet()){
+        for(String name : url_maps.keySet())
+        {
             TextSliderView textSliderView = new TextSliderView(this);
             // initialize a SliderLayout
             textSliderView
@@ -73,12 +80,10 @@ public class HomeScreen extends AppCompatActivity
                     .image(url_maps.get(name))
                     .setScaleType(BaseSliderView.ScaleType.Fit)
                     .setOnSliderClickListener(this);
-
             //add your extra information
             textSliderView.bundle(new Bundle());
             textSliderView.getBundle()
                     .putString("extra",name);
-
             mDemoSlider.addSlider(textSliderView);
         }
 
@@ -87,15 +92,45 @@ public class HomeScreen extends AppCompatActivity
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
         mDemoSlider.addOnPageChangeListener(HomeScreen.this);
-        ListView l = (ListView)findViewById(R.id.transformers);
-        l.setAdapter(new TransformerAdapter(HomeScreen.this));
-        l.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        //listView.setAdapter(new TransformerAdapter(HomeScreen.this));
+
+    }
+
+    private void initListners()
+    {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mDemoSlider.setPresetTransformer(((TextView) view).getText().toString());
-                Toast.makeText(HomeScreen.this, ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+               //TODO
+
             }
         });
+
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                mDemoSlider.setPresetTransformer(((TextView) view).getText().toString());
+//                Toast.makeText(HomeScreen.this, ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+    }
+
+    private void init()
+    {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
+        //listView = (ListView)findViewById(R.id.transformers);
+        rvList = (RecyclerView)findViewById(R.id.rvList);
+    }
+
+    private void initList(ArrayList<WeeksBean> arr)
+    {
+        WeekListAdapter adapt = new WeekListAdapter(mContext, arr);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        rvList.setLayoutManager(mLayoutManager);
+        rvList.setItemAnimator(new DefaultItemAnimator());
+        rvList.setAdapter(adapt);
     }
 
     @Override

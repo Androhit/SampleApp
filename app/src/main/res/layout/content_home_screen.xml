@@ -15,11 +15,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <!--<ListView
             android:layout_below="@+id/slider"
             android:id="@+id/transformers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="wrap_content"></ListView>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
 
     </RelativeLayout>
