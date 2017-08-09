@@ -3,17 +3,25 @@ package com.rjp.elearner.beans;
 /**
  * Created by rohit on 6/8/17.
  */
-public class WeeksBean
+public class WeeksDaysBean
 {
-    private String id,name,desc,no_of_days;
+    private String id,day,desc,week;
     private int complete_status;
 
-    public String getName() {
-        return name;
+    public String getDay() {
+        return day;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
+        this.week = week;
     }
 
     public String getDesc() {
@@ -22,14 +30,6 @@ public class WeeksBean
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public String getNo_of_days() {
-        return no_of_days;
-    }
-
-    public void setNo_of_days(String no_of_days) {
-        this.no_of_days = no_of_days;
     }
 
     public int getComplete_status() {

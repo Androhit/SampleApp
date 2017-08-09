@@ -50,6 +50,7 @@ public class HomeScreen extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        mContext = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,10 +67,9 @@ public class HomeScreen extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         HashMap<String,String> url_maps = new HashMap<String, String>();
-        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
-        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
-        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
-        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner1.jpg");
+        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner2.jpg");
+        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner3.jpg");
 
         for(String name : url_maps.keySet())
         {
@@ -94,6 +94,8 @@ public class HomeScreen extends AppCompatActivity
         mDemoSlider.addOnPageChangeListener(HomeScreen.this);
 
         //listView.setAdapter(new TransformerAdapter(HomeScreen.this));
+
+        initList(new ArrayList<WeeksBean>());
 
     }
 
@@ -126,6 +128,34 @@ public class HomeScreen extends AppCompatActivity
 
     private void initList(ArrayList<WeeksBean> arr)
     {
+
+        arr = new ArrayList<>();
+
+        WeeksBean obj = new WeeksBean();
+        obj.setName("First Week");
+        obj.setDesc("Basic Concepts of English Language");
+        obj.setNo_of_days("5");
+        obj.setComplete_status(0);
+        arr.add(obj);
+        obj = new WeeksBean();
+        obj.setName("Second Week");
+        obj.setDesc("Fundamentals of English");
+        obj.setNo_of_days("4");
+        obj.setComplete_status(0);
+        arr.add(obj);
+        obj = new WeeksBean();
+        obj.setName("Third Week");
+        obj.setDesc("Fundamentals of English");
+        obj.setNo_of_days("6");
+        obj.setComplete_status(0);
+        arr.add(obj);
+        obj = new WeeksBean();
+        obj.setName("Fourth Week");
+        obj.setDesc("Basic Concepts of English Language");
+        obj.setNo_of_days("5");
+        obj.setComplete_status(0);
+        arr.add(obj);
+
         WeekListAdapter adapt = new WeekListAdapter(mContext, arr);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         rvList.setLayoutManager(mLayoutManager);

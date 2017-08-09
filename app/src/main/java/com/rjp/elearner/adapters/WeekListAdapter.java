@@ -6,17 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.transition.TransitionManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rjp.elearner.R;
 import com.rjp.elearner.beans.WeeksBean;
+import com.rjp.elearner.beans.WeeksDaysBean;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,19 +34,25 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
     private ArrayList<WeeksBean> taskList;
     private ArrayList<WeeksBean> arraylist;
     private Context mContext;
+    private int[] clr;
+    private int pos = 0;
+    private int mExpandedPosition = 0;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tvSubject,tvCredit,tvSessionPlan,tvTimeTable;
-        public LinearLayout layMain;
+        public TextView tvWeek,tvDesc,tvDays,tvStatus;
+        public RelativeLayout layMain;
+        public RecyclerView rvList;
 
         public MyViewHolder(View view)
         {
             super(view);
-            tvSubject = (TextView) view.findViewById(R.id.tvPSubject);
-            tvCredit = (TextView) view.findViewById(R.id.tvPCredit);
-            tvSessionPlan = (TextView) view.findViewById(R.id.tvPSessPlan);
-            tvTimeTable = (TextView) view.findViewById(R.id.tvPTimetable);
-            layMain = (LinearLayout)view.findViewById(R.id.layMain);
+            tvWeek = (TextView) view.findViewById(R.id.tvWeek);
+            tvDesc = (TextView) view.findViewById(R.id.tvDesc);
+            tvDays = (TextView) view.findViewById(R.id.tvDays);
+            tvStatus = (TextView) view.findViewById(R.id.tvStatus);
+            layMain = (RelativeLayout) view.findViewById(R.id.layMain);
+            rvList = (RecyclerView) view.findViewById(R.id.rvList);
 
             itemView.setOnClickListener(this);
         }
@@ -57,6 +68,7 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
         this.arraylist = new ArrayList<WeeksBean>();
         this.arraylist.addAll(arrList);
         this.mContext = cont;
+        this.clr = new int[]{R.color.md_brown_400,R.color.md_deep_orange_400,R.color.md_green_400,R.color.md_indigo_400,R.color.md_green_400,R.color.md_light_green_400,R.color.md_pink_400};
     }
 
     @Override
@@ -68,10 +80,56 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final WeeksBean objStud = taskList.get(position);
 
-        holder.tvSubject.setText(objStud.getId());
+        pos = position;
+        if(position>clr.length)
+        {
+            pos = 0;
+        }
+
+        holder.tvWeek.setText(objStud.getName());
+        holder.tvDesc.setText(objStud.getDesc());
+        holder.tvDays.setText("DAYS : "+objStud.getNo_of_days());
+        holder.tvStatus.setText(objStud.getNo_of_days().equals("OPEN")?"OPEN":"PENDING");
+        holder.layMain.setBackgroundColor(mContext.getResources().getColor(clr[pos]));
+
+        ArrayList<WeeksDaysBean> arr = new ArrayList<>();
+
+        WeeksDaysBean obj = new WeeksDaysBean();
+        obj.setDesc("Basic Concepts of English Language");
+        obj.setDay("First");
+        obj.setComplete_status(0);
+        arr.add(obj);
+        obj = new WeeksDaysBean();
+        obj.setDesc("Basic Concepts of English Language");
+        obj.setDay("Second");
+        obj.setComplete_status(0);
+        arr.add(obj);
+        obj = new WeeksDaysBean();
+        obj.setDesc("Basic Concepts of English Language");
+        obj.setDay("Third");
+        obj.setComplete_status(0);
+        arr.add(obj);
+
+        WeekDaysListAdapter adapter = new WeekDaysListAdapter(mContext,arr);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        holder.rvList.setLayoutManager(mLayoutManager);
+        holder.rvList.setItemAnimator(new DefaultItemAnimator());
+        holder.rvList.setAdapter(adapter);
+
+        final boolean isExpanded = position==mExpandedPosition;
+        holder.rvList.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        holder.itemView.setActivated(isExpanded);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mExpandedPosition = isExpanded ? -1:position;
+                TransitionManager.beginDelayedTransition(holder.rvList);
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

@@ -38,6 +38,7 @@
                 android:layout_height="200dp"
                 custom:pager_animation="Accordion"
                 custom:auto_cycle="true"
+                android:visibility="gone"
                 custom:indicator_visibility="visible"
                 custom:pager_animation_span="1100"
                 />
@@ -47,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:visibility="gone"
                 custom:selected_color="#0095BF"
                 custom:unselected_color="#55333333"
                 custom:selected_drawable="@drawable/logo"
