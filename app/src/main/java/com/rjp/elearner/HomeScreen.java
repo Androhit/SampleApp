@@ -2,13 +2,10 @@ package com.rjp.elearner;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,17 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.rjp.elearner.adapters.TransformerAdapter;
 import com.rjp.elearner.adapters.WeekListAdapter;
 import com.rjp.elearner.beans.WeeksBean;
 
@@ -35,14 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HomeScreen extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     private String TAG = HomeScreen.class.getSimpleName();
     private Context mContext;
-    private SliderLayout mDemoSlider;
-    private FloatingActionButton fab;
-
-    //private ListView listView;
+    private SliderLayout sliderLayout;
     private RecyclerView rvList;
 
 
@@ -66,68 +56,44 @@ public class HomeScreen extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        HashMap<String,String> url_maps = new HashMap<String, String>();
-        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner1.jpg");
-        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner2.jpg");
-        url_maps.put("", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner3.jpg");
+        HashMap<String, String> url_maps = new HashMap<String, String>();
+        url_maps.put("abc", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner1.jpg");
+        url_maps.put("xyz", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner2.jpg");
+        url_maps.put("pqr", "http://www.e-learner.in/assets/landing-page/elearner-img/webbanner3.jpg");
 
-        for(String name : url_maps.keySet())
-        {
-            TextSliderView textSliderView = new TextSliderView(this);
+        for (String name : url_maps.keySet()) {
+            DefaultSliderView sliderView = new DefaultSliderView(this);
             // initialize a SliderLayout
-            textSliderView
-                    .description(name)
+            sliderView
                     .image(url_maps.get(name))
                     .setScaleType(BaseSliderView.ScaleType.Fit)
                     .setOnSliderClickListener(this);
             //add your extra information
-            textSliderView.bundle(new Bundle());
-            textSliderView.getBundle()
-                    .putString("extra",name);
-            mDemoSlider.addSlider(textSliderView);
+            sliderView.bundle(new Bundle());
+            sliderView.getBundle()
+                    .putString("extra", name);
+            sliderLayout.addSlider(sliderView);
         }
 
-        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
-        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        mDemoSlider.setCustomAnimation(new DescriptionAnimation());
-        mDemoSlider.setDuration(4000);
-        mDemoSlider.addOnPageChangeListener(HomeScreen.this);
-
-        //listView.setAdapter(new TransformerAdapter(HomeScreen.this));
+        sliderLayout.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        sliderLayout.setCustomAnimation(new DescriptionAnimation());
+        sliderLayout.setDuration(4000);
+        sliderLayout.addOnPageChangeListener(HomeScreen.this);
 
         initList(new ArrayList<WeeksBean>());
 
     }
 
-    private void initListners()
-    {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               //TODO
-
-            }
-        });
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                mDemoSlider.setPresetTransformer(((TextView) view).getText().toString());
-//                Toast.makeText(HomeScreen.this, ((TextView) view).getText().toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+    private void initListners() {
     }
 
-    private void init()
-    {
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
-        //listView = (ListView)findViewById(R.id.transformers);
-        rvList = (RecyclerView)findViewById(R.id.rvList);
+    private void init() {
+        sliderLayout = (SliderLayout) findViewById(R.id.slider);
+        rvList = (RecyclerView) findViewById(R.id.rvList);
     }
 
-    private void initList(ArrayList<WeeksBean> arr)
-    {
+    private void initList(ArrayList<WeeksBean> arr) {
 
         arr = new ArrayList<>();
 
@@ -223,18 +189,19 @@ public class HomeScreen extends AppCompatActivity
     @Override
     protected void onStop() {
         // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
-        mDemoSlider.stopAutoCycle();
+        sliderLayout.stopAutoCycle();
         super.onStop();
     }
 
     @Override
     public void onSliderClick(BaseSliderView slider) {
-        Toast.makeText(this,slider.getBundle().get("extra") + "",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, slider.getBundle().get("extra") + "", Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
     @Override
     public void onPageSelected(int position) {
@@ -242,5 +209,6 @@ public class HomeScreen extends AppCompatActivity
     }
 
     @Override
-    public void onPageScrollStateChanged(int state) {}
+    public void onPageScrollStateChanged(int state) {
+    }
 }
