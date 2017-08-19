@@ -38,14 +38,12 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
     private int pos = 0;
     private int mExpandedPosition = 0;
 
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView tvWeek, tvDesc, tvDays, tvStatus;
+        RelativeLayout layMain;
+        RecyclerView rvList;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tvWeek,tvDesc,tvDays,tvStatus;
-        public RelativeLayout layMain;
-        public RecyclerView rvList;
-
-        public MyViewHolder(View view)
-        {
+        MyViewHolder(View view) {
             super(view);
             tvWeek = (TextView) view.findViewById(R.id.tvWeek);
             tvDesc = (TextView) view.findViewById(R.id.tvDesc);
@@ -68,7 +66,14 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
         this.arraylist = new ArrayList<WeeksBean>();
         this.arraylist.addAll(arrList);
         this.mContext = cont;
-        this.clr = new int[]{R.color.md_brown_400,R.color.md_deep_orange_400,R.color.md_green_400,R.color.md_indigo_400,R.color.md_green_400,R.color.md_light_green_400,R.color.md_pink_400};
+        this.clr = new int[]{
+                R.color.md_brown_400,
+                R.color.md_deep_orange_400,
+                R.color.md_green_400,
+                R.color.md_indigo_400,
+                R.color.md_green_400,
+                R.color.md_light_green_400,
+                R.color.md_pink_400};
     }
 
     @Override
@@ -84,15 +89,14 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
         final WeeksBean objStud = taskList.get(position);
 
         pos = position;
-        if(position>clr.length)
-        {
+        if (position > clr.length) {
             pos = 0;
         }
 
         holder.tvWeek.setText(objStud.getName());
         holder.tvDesc.setText(objStud.getDesc());
-        holder.tvDays.setText("DAYS : "+objStud.getNo_of_days());
-        holder.tvStatus.setText(objStud.getNo_of_days().equals("OPEN")?"OPEN":"PENDING");
+        holder.tvDays.setText("DAYS : " + objStud.getNo_of_days());
+        holder.tvStatus.setText(objStud.getNo_of_days().equals("OPEN") ? "OPEN" : "PENDING");
         holder.layMain.setBackgroundColor(mContext.getResources().getColor(clr[pos]));
 
         ArrayList<WeeksDaysBean> arr = new ArrayList<>();
@@ -113,19 +117,19 @@ public class WeekListAdapter extends RecyclerView.Adapter<WeekListAdapter.MyView
         obj.setComplete_status(0);
         arr.add(obj);
 
-        WeekDaysListAdapter adapter = new WeekDaysListAdapter(mContext,arr);
+        WeekDaysListAdapter adapter = new WeekDaysListAdapter(mContext, arr);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         holder.rvList.setLayoutManager(mLayoutManager);
         holder.rvList.setItemAnimator(new DefaultItemAnimator());
         holder.rvList.setAdapter(adapter);
 
-        final boolean isExpanded = position==mExpandedPosition;
-        holder.rvList.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        final boolean isExpanded = position == mExpandedPosition;
+        holder.rvList.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         holder.itemView.setActivated(isExpanded);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mExpandedPosition = isExpanded ? -1:position;
+                mExpandedPosition = isExpanded ? -1 : position;
                 TransitionManager.beginDelayedTransition(holder.rvList);
                 notifyDataSetChanged();
             }
